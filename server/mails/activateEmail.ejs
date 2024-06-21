@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 10px;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+        .activation-code {
+            font-weight: bold;
+            color: #e74c3c;
+            background-color: #fef2f2;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 20px 0;
+        }
+        .validity-info {
+            font-size: 14px;
+            color: #777777;
+            margin-top: 10px;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777777;
+            text-align: center;
+            font-family: 'Arial Black', sans-serif;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        .footer a {
+            color: #2c3e50;
+            text-decoration: none;
+        }
+        .contact-info {
+            color: #3498db; /* Blue color */
+        }
+        .cool-sentence {
+            font-style: italic;
+            color: #27ae60; /* Green color */
+        }
+        .company-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hello, <%= user.name %>!</h1>
+        <p>Thank you for registering with us. Please use the following activation code to verify your email address:</p>
+        <p class="activation-code"><%= activationCode %></p>
+        <p class="validity-info">This code is valid for the next 5 minutes.</p>
+        <p>If you did not sign up for this account, please disregard this email.</p>
+        <p class="cool-sentence">We're excited to welcome you to our community!</p>
+        <p>To learn more about our services or if you have any questions, feel free to <span class="contact-info">contact us</span> at <a href="mailto:sachinandan.priv05@gmail.com" class="contact-info">sachinandan.priv05@gmail.com</a>.</p>
+        <div class="footer">
+            <p>Best regards,</p>
+           
+        </div>
+    </div>
+</body>
+</html>

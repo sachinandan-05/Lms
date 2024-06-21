@@ -1,14 +1,20 @@
 import dotenv from "dotenv"
-import express, { NextFunction, response } from "express"
-import cookieParser from "cookie-parser"
-import { Request,Response } from "express"
-import cors from "cors"
-import app from "./app"
-import connectDb from "./utils/db"
-import { errorMidleware } from "./middleware/error"
+import {app} from "./app"
+import connectDb from "./db/db"
+import {v2 as cloudinary} from "cloudinary"
+
 dotenv.config({
     path:".env"
 })
+
+// cloudinary config
+
+cloudinary.config({
+    cloud_name:process.env.CLOUD_NAME,
+    api_key:process.env.CLOUDINARY_API_KEY,
+    api_secret:process.env.CLOUDINARY_API_SECRET_KEY
+})
+
 
 
 app.listen(process.env.PORT || 8080 ,()=>{
@@ -19,40 +25,3 @@ app.listen(process.env.PORT || 8080 ,()=>{
 connectDb()
 
 
-//bodyparser
-
-app.use(express.json({limit:"50mb"}))
-
-// cookie-parser
-
-app.use(cookieParser())
-
-//cors =>cros origin resource sharing
-
-app.use(
-    cors({
-        origin:process.env.CROS_ORIGIN
-    })
-)
-
-//testing api
-
-app.get("/test",(req:Request,res:Response,next:NextFunction)=>{
-    res.json({
-        status:200,
-        message:"app is running "
-    })
-})
-
-//unknown route
-
-app.get("*",(req:Request,res:Response,next:NextFunction)=>{
-    res.json({
-        status:404,
-        message:"this route is not declare",
-        error:true
-    })
-})
-
-//error 
-app.use(errorMidleware);
