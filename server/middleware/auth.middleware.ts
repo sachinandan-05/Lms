@@ -34,7 +34,7 @@ export const isAuthenticated = catchAsyncError(async (req: CustomRequest, res: R
   const user = await redisClient.get(userId);
 
   if (!user) {
-    return next(new errorHandler("User not found", 404));
+    return next(new errorHandler("please login to access this resouce!", 404));
   }
 
   req.user = JSON.parse(user);

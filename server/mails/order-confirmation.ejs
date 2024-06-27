@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .header h1 {
+            margin: 0;
+            color: #4CAF50;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        .content h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .content p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            margin-top: 20px;
+        }
+        .footer p {
+            margin: 0;
+            font-size: 14px;
+            color: #999;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Order Confirmation</h1>
+        </div>
+        <div class="content">
+            <h2>Hi <%= order.name %>,</h2>
+            <p>Thank you for your purchase! Here are the details of your order:</p>
+            <p><strong>Order ID:</strong> <%= order._id %></p>
+            <p><strong>Course Name:</strong> <%= order.name %></p>
+            <p><strong>Price:</strong> $<%= order.price %></p>
+            <p><strong>Purchase Date:</strong> <%= order.date %></p>
+            <a href="" class="button">Start Course</a>
+        </div>
+        <div class="footer">
+            <p>If you have any questions, feel free to contact us at support@example.com.</p>
+            <p>&copy; <%= order.date %> Your Company Name. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -40,13 +40,19 @@ app.get("/test",(req:Request,res:Response,next:NextFunction)=>{
 // router installation
 import userRouter from "./routes/user.route"
 import courseRouter from "./routes/course.route"
-
-
+import orderRoute from "./routes/order.route"
+import notificationRoute from "./routes/notification.route"
+import analyticRoute from "./routes/anyltic.route"
+import layoutRoute from "./routes/layout.route"
 
 // router declaration
 
 app.use("/app/v1/user",userRouter)
 app.use("/app/v1/course",courseRouter)
+app.use("/app/v1/order",orderRoute)
+app.use("/app/v1/notification",notificationRoute)
+app.use("/app/v1/anlytic",analyticRoute)
+app.use("/app/v1/layout",layoutRoute)
 
 
 //error 

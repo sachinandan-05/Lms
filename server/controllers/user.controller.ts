@@ -2,7 +2,7 @@ import userModel, { IUser } from "../models/user.model";
 import dotenv from "dotenv";
 import errorHandler from "../utils/errorHandler";
 import { catchAsyncError } from "../utils/catchAsyncError";
-import e, { Response, Request, NextFunction, json } from "express";
+import { Response, Request, NextFunction, json } from "express";
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import ejs from "ejs";
 import path from "path";
@@ -11,7 +11,7 @@ import { accessTokenOptions, refreshTokenOptions, sendToken } from "../utils/jwt
 dotenv.config();
 import bcrypt from "bcrypt";
 import redisClient from "../utils/redis";
-import { getUserInfoById } from "../service/user.service";
+import { getAllUserService, getUserInfoById, updateUserRoleByAdminService } from "../service/user.service";
 import { set } from "mongoose";
 import cloudinary from "cloudinary"
 
@@ -222,7 +222,7 @@ const updateAccessToken = catchAsyncError(async (req: CustomRequest, res: Respon
     }
     const session = await redisClient.get(decodedToken.id as string);
     if (!session) {
-      return next(new errorHandler(message, 400))
+      return next(new errorHandler("Plaese login to access this resources!", 400))
     }
 
     const User: IUser = JSON.parse(session);
@@ -234,6 +234,7 @@ const updateAccessToken = catchAsyncError(async (req: CustomRequest, res: Respon
 
     res.cookie("accessToken", accessToken, accessTokenOptions);
     res.cookie("refreshToken", refreshToken, refreshTokenOptions);
+    await redisClient.set(User._id,JSON.stringify(User),"EX",604800); //expire in 7day
 
     res.status(200).json({
       success: true,
@@ -294,17 +295,6 @@ const updateUserDetails = catchAsyncError(async (req: CustomRequest, res: Respon
 
   try {
     const { email, name } = req.body as IUpdateUserInfo;
-
-
-
-    // if(!email ){
-    //   throw new Error("please provide Email!")
-    // }
-    // if(!name ){
-    //   throw new Error("please provide user name!")
-    // }
-
-
 
     const userId = req.user?._id;
 
@@ -447,6 +437,65 @@ const updateProfilePic = catchAsyncError(async (req: CustomRequest, res: Respons
 
 
 })
+// -------------------------get all user for -admin----------------------------------
+
+ const getAllUser = catchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+  try {
+      const users = await getAllUserService();
+
+      res.status(200).json({
+          success: true,
+          users
+      });
+  } catch (error: any) {
+      next(new errorHandler(error.message, 500));
+  }
+});
+// --------------------------------update user role -only for user--------------------------------
+
+const updateUserRole= catchAsyncError(async(req:Request,res:Response,next:NextFunction)=>{
+
+  try {
+    const{id,role}=req.body as {id:string,role:string}
+     updateUserRoleByAdminService(res,id,role)
+  
+  } catch (error:any) {
+    return next(new errorHandler(error.message,500));
+    
+  }
+
+})
+
+// -----------------------------delete user -only for admin-------------------------------
+
+export const deleteUser= catchAsyncError(async(req:Request,res:Response,next:NextFunction)=>{
+  try {
+    const {id }=req.params as {id:string}
+
+
+    const user= await userModel.findById(id);
+
+    if(!user){
+      return next(new errorHandler("user not found",400));
+    }
+    await userModel.findByIdAndDelete(id);
+    await redisClient.del(id);
+
+  
+    res.status(200).json({
+      success:true,
+      message:"user has been deleted successfully!!",
+      user
+    })
+  
+    
+  } catch (error:any) {
+    return next(new errorHandler(error.message,500));
+  }
+
+
+
+})
 
 export {
   userRegistration,
@@ -458,5 +507,7 @@ export {
   socialAuth,
   updateUserDetails,
   updatePassword,
-  updateProfilePic
+  updateProfilePic,
+  getAllUser,
+  updateUserRole
 };

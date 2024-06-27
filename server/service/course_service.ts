@@ -18,6 +18,15 @@ const createCourse = async (data: any, res: Response, next: NextFunction) => {
     } catch (error: any) {
         next(new errorHandler(error.message, 500));
     }
-};
+}
+
+// get all
+
+export const getAllCourseService=async()=>{
+    const courses= await courseModel.find().sort({createdAt: -1});
+  
+     return courses;
+  }
 
 export default createCourse;
+
