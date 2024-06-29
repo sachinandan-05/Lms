@@ -19,27 +19,28 @@ const Hero: React.FC<Props> = () => {
       </div>
 
       <div className="w-full lg:w-1/2 flex flex-col items-center justify-center text-center mt-8 lg:mt-0">
-        <div className="translateZ-0 translateY-0 translate-x-1">
+        <div className="bounce-once">
           <h2 className="dark:text-white text-[#000000c7] text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold px-3 w-full font-Josefin py-2 leading-tight lg:leading-[75px]">
             Improve Your Online Learning Experience Better Instantly
           </h2>
         </div>
 
+
         <p className="dark:text-[#edfff4] text-[#000000ac] font-Josefin text-base sm:text-lg md:text-xl lg:text-2xl w-full sm:w-3/4 lg:w-[78%] mt-4">
           We have <span className="text-[#FFD700]">40k+</span> Online courses & <span className="text-[#FFD700]">500k+</span> Online registered students. Find your desired Courses from them.
         </p>
         <div className="w-full flex items-center justify-center mt-6 lg:mt-8 ">
-        
+
           <input
             type="search"
             placeholder="Search Courses..."
-            className="bg-transparent border-none dark:bg-[#575757] dark:placeholder-[#ffffffdd] rounded-l-[5px] p-2 py-1 w-2/3 sm:w-3/4 lg:w-2/3  outline-none h-8 lg:h-10   text-black dark:text-white "
+            className="bg-slate-200 border-none dark:bg-[#575757] dark:placeholder-[#ffffffdd] rounded-l-[5px] p-2 py-1 w-2/3 sm:w-3/4 lg:w-2/3  outline-none h-8 lg:h-10   text-black dark:text-white "
           />
           <button className="bg-[#39c1f3] rounded-r-[5px] p-2 h-8 lg:h-10 cursor-pointer  px-4 ">
             <BiSearch className="text-white " />
           </button>
-          
-         
+
+
         </div>
       </div>
     </div>

@@ -6,16 +6,26 @@ import NavItems from "../utils/NavItems";
 import ThemeSwitcher from "../utils/ThemeSwitcher";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { FaUserCircle } from "react-icons/fa";
+import CustomModel from "../utils/CustomModel";
+import Login from "./auth/Login";
+import SignUp from "./auth/SignUp";
+import Verification from "./auth/Verification";
+
 type Props = {
     open: boolean;
     setOpen: (open: boolean) => void;
-    activeItem: number
+    activeItem: number;
+    route: string;
+    setRoute: (route: string) => void
+
+
 
 }
 
-const Header: FC<Props> = ({ setOpen, activeItem }) => {
+const Header: FC<Props> = ({ open, setOpen, activeItem, setRoute, route }) => {
     const [active, setActive] = useState(false);
     const [openSideBar, setOpenSideBar] = useState(false);
+
     if (typeof window !== "undefined") {
         window.addEventListener("scroll", () => {
             if (window.scrollY > 85) {
@@ -49,7 +59,7 @@ const Header: FC<Props> = ({ setOpen, activeItem }) => {
                             <ThemeSwitcher />
 
                             <div className="hidden md:block">
-                                <FaUserCircle size={25} className="dark:text-white text-black ml-3" />
+                                <FaUserCircle size={25} className="dark:text-white text-black ml-3 cursor-pointer"  onClick={()=>setOpen(true)}/>
                             </div>
 
                             {/* only for mobile */}
@@ -66,9 +76,9 @@ const Header: FC<Props> = ({ setOpen, activeItem }) => {
                                 <div className="fixed w-full top-0 left-0 z-[99999] dark:bg-[unset] bg-[#e1606024]" id="screen"
                                     onClick={handleClose}>
                                     <div className="w-[70%] fixed z-[999999] h-screen bg-white dark:bg-slate-900 top-0 right-0 dark:bg-opacity-90 shadow-sm drop-shadow-sm shadow-slate-500">
-                                        
-                                        <NavItems  activeItem={activeItem} isMobile={true} />
-                                        <div className=" text-center ">
+
+                                        <NavItems activeItem={activeItem} isMobile={true} />
+                                        <div className=" text-center " onClick={()=>setOpen(true)}>
                                             <FaUserCircle size={30} className="dark:text-white text-black ml-6" />
                                         </div>
                                         <p className="text-[16px] px-2 pl-5 text-black dark:text-white">copyright@ 2024 Elearning</p>
@@ -83,6 +93,51 @@ const Header: FC<Props> = ({ setOpen, activeItem }) => {
                 </div>
 
             </div>
+            {
+                route === "Login" &&
+                (
+                    
+                        open && (
+                        <CustomModel
+                            open={open}
+                            setOpen={setOpen}
+                            setRoute={setRoute}
+                            activeItem={activeItem}
+                            component={Login} />
+                        )
+                    
+                )
+            }
+             {
+                route === "Sign-Up" &&
+                (
+                    
+                        open && (
+                        <CustomModel
+                            open={open}
+                            setOpen={setOpen}
+                            setRoute={setRoute}
+                            activeItem={activeItem}
+                            component={SignUp} />
+                        )
+                    
+                )
+            }
+             {
+                route === "Verification" &&
+                (
+                    
+                        open && (
+                        <CustomModel
+                            open={open}
+                            setOpen={setOpen}
+                            setRoute={setRoute}
+                            activeItem={activeItem}
+                            component={Verification} />
+                        )
+                    
+                )
+            }
 
         </div>
     )
