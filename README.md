@@ -65,10 +65,6 @@ E-learning is a comprehensive Learning Management System (LMS) built with modern
 - Automated notification cleanup
 - Error handling system
 
-## 🌐 Live Preview
-
-[
-
 ## 🛠️ Tech Stack
 
 ### Frontend
@@ -98,11 +94,6 @@ E-learning is a comprehensive Learning Management System (LMS) built with modern
 - ESLint
 - Prettier
 - Git
-
-## Test Credential
-
-- Email: test@gmail.com
-- Password: test123
 
 ## 📱 Screenshots
 
