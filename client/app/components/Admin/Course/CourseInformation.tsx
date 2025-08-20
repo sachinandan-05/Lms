@@ -90,7 +90,7 @@ const CourseInformation: React.FC<Props> = ({
             }
           >
             <option value="">Select a category</option>
-            {categories.map((category, index) => (
+            {categories?.map((category, index) => (
               <option 
                 className="dark:bg-[#000] text-[#fff]"
                 key={index}

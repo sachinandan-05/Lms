@@ -60,10 +60,10 @@ export const editCourse = CatchAsyncError(
         };
       }
 
-      if (thumbnail.startsWith("https")) {
+      if (thumbnail?.startsWith("https")) {
         data.thumbnail = {
-          public_id: courseData?.thumbnail.public_id,
-          url: courseData?.thumbnail.url,
+          public_id: courseData?.thumbnail?.public_id,
+          url: courseData?.thumbnail?.url,
         };
       }
 

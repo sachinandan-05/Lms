@@ -1,62 +1,75 @@
 import { Request, Response, NextFunction } from "express";
+import mongoose from "mongoose";
 import ErrorHandler from "../utils/ErrorHandler";
 import { CatchAsyncError } from "../middleware/catchAsyncErrors";
 import LayoutModel from "../models/layout.model";
 import cloudinary from "cloudinary";
 
-// create layout
+// Create layout
 export const createLayout = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { type } = req.body;
+
+      // Prevent duplicate type
       const isTypeExist = await LayoutModel.findOne({ type });
       if (isTypeExist) {
-        return next(new ErrorHandler(`${type} already exist`, 400));
+        return next(new ErrorHandler(`${type} already exists`, 400));
       }
+
       if (type === "Banner") {
         const { image, title, subTitle } = req.body;
-        const myCloud = await cloudinary.v2.uploader.upload(image, {
-          folder: "layout",
-        });
+
+        let uploadedImage = { public_id: "", url: "" };
+        if (image && !image.startsWith("https")) {
+          const uploadResult = await cloudinary.v2.uploader.upload(image, {
+            folder: "layout",
+          });
+          uploadedImage = {
+            public_id: uploadResult.public_id,
+            url: uploadResult.secure_url,
+          };
+        }
+
         const banner = {
           type: "Banner",
           banner: {
-            image: {
-              public_id: myCloud.public_id,
-              url: myCloud.secure_url,
-            },
-            title,
-            subTitle,
+            image: uploadedImage,
+            title: title || "",
+            subTitle: subTitle || "",
           },
         };
+
         await LayoutModel.create(banner);
       }
+
       if (type === "FAQ") {
         const { faq } = req.body;
-        console.log(faq);
-        const faqItems = await Promise.all(
-          faq.map(async (item: any) => {
-            return {
-              question: item.question,
-              answer: item.answer,
-            };
-          })
-        );
-        console.log(faqItems);
+        if (!Array.isArray(faq)) {
+          return next(new ErrorHandler("FAQ data must be an array", 400));
+        }
+
+        const faqItems = faq.map((item: any) => ({
+          question: item.question || "",
+          answer: item.answer || "",
+        }));
+
         await LayoutModel.create({ type: "FAQ", faq: faqItems });
       }
+
       if (type === "Categories") {
         const { categories } = req.body;
-        const categoriesItems = await Promise.all(
-          categories.map(async (item: any) => {
-            return {
-              title: item.title,
-            };
-          })
-        );
-        await LayoutModel.create({
-          type: "Categories",
-          categories: categoriesItems,
+        if (!Array.isArray(categories)) {
+          return next(new ErrorHandler("Categories must be an array", 400));
+        }
+
+        const categoriesItems = categories.map((item: any) => ({
+          title: item.title || ""
+        }));
+
+        await LayoutModel.create({ 
+          type: "Categories", 
+          categories: categoriesItems 
         });
       }
 
@@ -75,150 +88,123 @@ export const editLayout = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { type } = req.body;
-      console.log("Edit layout request:", { type, body: req.body });
-      
+
       if (type === "Banner") {
         const bannerData: any = await LayoutModel.findOne({ type: "Banner" });
-
         const { image, title, subTitle } = req.body;
 
-        // Fix: Check if bannerData exists
         if (bannerData) {
-          if (image) {
-            const data = image.startsWith("https")
-              ? bannerData
-              : await cloudinary.v2.uploader.upload(image, {
-                  folder: "layout",
-                });
-
-            const banner = {
-              type: "Banner",
-              banner: {
-                image: {
-                  public_id: image.startsWith("https")
-                    ? bannerData.banner.image.public_id
-                    : data?.public_id,
-                  url: image.startsWith("https")
-                    ? bannerData.banner.image.url
-                    : data?.secure_url,
-                },
-                title,
-                subTitle,
-              },
+          // Update image if new one provided
+          if (image && !image.startsWith("https")) {
+            const uploadResult = await cloudinary.v2.uploader.upload(image, {
+              folder: "layout",
+            });
+            bannerData.banner.image = {
+              public_id: uploadResult.public_id,
+              url: uploadResult.secure_url,
             };
-
-            await LayoutModel.findByIdAndUpdate(bannerData._id, { banner });
-          } else {
-            // Update only title and subTitle without changing image
-            const banner = {
-              type: "Banner",
-              banner: {
-                ...bannerData.banner,
-                title,
-                subTitle,
-              },
-            };
-
-            await LayoutModel.findByIdAndUpdate(bannerData._id, { banner });
           }
+
+          // Update text fields
+          if (title !== undefined) bannerData.banner.title = title;
+          if (subTitle !== undefined) bannerData.banner.subTitle = subTitle;
+
+          await bannerData.save();
+
+          return res.status(200).json({
+            success: true,
+            message: "Banner updated successfully",
+            banner: bannerData,
+          });
         } else {
-          // Create new Banner record if it doesn't exist
-          const banner = {
+          // Create new banner if none exists
+          const newBanner = {
             type: "Banner",
             banner: {
-              image: {
-                public_id: "",
-                url: "",
-              },
+              image: { public_id: "", url: "" },
               title: title || "",
               subTitle: subTitle || "",
             },
           };
+          const created = await LayoutModel.create(newBanner);
 
-          await LayoutModel.create(banner);
+          return res.status(200).json({
+            success: true,
+            message: "Banner created successfully",
+            banner: created,
+          });
         }
       }
 
       if (type === "FAQ") {
         const { faq } = req.body;
-        console.log("Processing FAQ update:", faq);
-        
         if (!Array.isArray(faq)) {
           return next(new ErrorHandler("FAQ data must be an array", 400));
         }
-        
-        // Find existing FAQ record
-        let FaqItem = await LayoutModel.findOne({ type: "FAQ" });
-        
-        // Prepare FAQ items
+
         const faqItems = faq.map((item: any) => ({
           question: item.question || "",
-          answer: item.answer || "",
+          answer: item.answer || ""
         }));
-        
-        console.log("Processed FAQ items:", faqItems);
-        
-        if (FaqItem) {
-          // Update existing FAQ record
-          console.log("Updating existing FAQ record with ID:", FaqItem._id);
-          const updatedFaq = await LayoutModel.findByIdAndUpdate(
-            FaqItem._id, 
-            {
-              type: "FAQ",
-              faq: faqItems,
-            },
-            { new: true }
-          );
-          console.log("Updated FAQ record:", updatedFaq);
+
+        let layout = await LayoutModel.findOne({ type: "FAQ" });
+        if (layout) {
+          layout.faq = []; // Clear existing FAQ items
+          faqItems.forEach(item => layout?.faq.push(item as any));
+          await layout.save();
         } else {
-          // Create new FAQ record if it doesn't exist
-          console.log("Creating new FAQ record");
-          const newFaq = await LayoutModel.create({
-            type: "FAQ",
-            faq: faqItems,
+          await LayoutModel.create({ 
+            type: "FAQ", 
+            faq: faqItems 
           });
-          console.log("Created new FAQ record:", newFaq);
         }
       }
-      
+
       if (type === "Categories") {
         const { categories } = req.body;
-        const categoriesData = await LayoutModel.findOne({
-          type: "Categories",
-        });
-        const categoriesItems = await Promise.all(
-          categories.map(async (item: any) => {
-            return {
-              title: item.title,
-            };
-          })
-        );
-        await LayoutModel.findByIdAndUpdate(categoriesData?._id, {
-          type: "Categories",
-          categories: categoriesItems,
-        });
+        if (!Array.isArray(categories)) {
+          return next(new ErrorHandler("Categories must be an array", 400));
+        }
+
+        const categoriesItems = categories.map((item: any) => ({
+          title: item.title || ""
+        }));
+
+        let categoriesData = await LayoutModel.findOne({ type: "Categories" });
+        if (categoriesData) {
+          categoriesData.categories = []; // Clear existing categories
+          categoriesItems.forEach(item => categoriesData?.categories.push(item as any));
+          await categoriesData.save();
+        } else {
+          await LayoutModel.create({ 
+            type: "Categories", 
+            categories: categoriesItems 
+          });
+        }
       }
 
       res.status(200).json({
         success: true,
-        message: "Layout Updated successfully",
+        message: "Layout updated successfully",
       });
     } catch (error: any) {
-      console.log("Layout update error:", error);
       return next(new ErrorHandler(error.message, 500));
     }
   }
 );
 
-// get layout by type
+// Get layout by type
 export const getLayoutByType = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { type } = req.params;
-      console.log("Getting layout for type:", type);
       const layout = await LayoutModel.findOne({ type });
-      console.log("Found layout:", layout);
-      res.status(201).json({
+
+      if (!layout) {
+        return next(new ErrorHandler(`${type} layout not found`, 404));
+      }
+
+      res.status(200).json({
         success: true,
         layout,
       });

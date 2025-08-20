@@ -1,7 +1,7 @@
 "use client";
+
 import "./globals.css";
-import { Poppins } from "next/font/google";
-import { Josefin_Sans } from "next/font/google";
+import { Poppins, Josefin_Sans } from "next/font/google";
 import { ThemeProvider } from "./utils/theme-provider";
 import { Toaster } from "react-hot-toast";
 import { Providers } from "./Provider";
@@ -10,8 +10,6 @@ import React, { FC, useEffect, useState } from "react";
 
 import Loader from "./components/Loader/Loader";
 import socketIO from "socket.io-client";
-const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
-const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -55,19 +53,26 @@ const Custom: FC<{ children: React.ReactNode }> = ({ children }) => {
 
   useEffect(() => {
     setMounted(true);
-    
+
+    const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
+    const socket = socketIO(ENDPOINT, { transports: ["websocket"] });
+
     // WebSocket connection handling
-    socketId.on("connect", () => {
+    socket.on("connect", () => {
       console.log("WebSocket connected successfully");
     });
-    
-    socketId.on("connect_error", (error) => {
+
+    socket.on("connect_error", (error) => {
       console.error("WebSocket connection error:", error);
     });
-    
-    socketId.on("disconnect", (reason) => {
+
+    socket.on("disconnect", (reason) => {
       console.log("WebSocket disconnected:", reason);
     });
+
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   if (!mounted) {

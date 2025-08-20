@@ -142,7 +142,7 @@ const Sidebar = () => {
                   src={user.avatar ? user.avatar.url : avatarDefault}
                   style={{
                     cursor: "pointer",
-                    borderRadius: "50%",
+                    borderRadius: "100%",
                     border: "3px solid #5b6fe6",
                   }}
                 />

@@ -19,6 +19,7 @@ const Hero: FC<Props> = (props) => {
   useEffect(() => {
     setMounted(true);
   }, []);
+  console.log("data",data)
   
 
   const handleSearch = () => {
