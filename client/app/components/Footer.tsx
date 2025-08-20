@@ -82,10 +82,10 @@ const Footer = (props: Props) => {
               </li>
               <li>
                 <Link
-                  href="https://www.github.com/sachinandan-05"
+                  href="https://www.github.com/sachinandan-05/Lms"
                   className="text-base text-black dark:text-gray-300 dark:hover:text-white"
                 >
-                  github
+                  Github
                 </Link>
               </li>
             </ul>
