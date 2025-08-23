@@ -41,19 +41,20 @@ const EditCourse:FC<Props> = ({id}) => {
   useEffect(() => {
     if (editCourseData) {
       setCourseInfo({
-        name: editCourseData.name,
-        description: editCourseData.description,
-        price: editCourseData.price,
-        estimatedPrice: editCourseData?.estimatedPrice,
-        tags: editCourseData.tags,
-        level: editCourseData.level,
-        categories:editCourseData.categories,
-        demoUrl: editCourseData.demoUrl,
-        thumbnail: editCourseData?.thumbnail?.url,
+        name: editCourseData.name || "",
+        description: editCourseData.description || "",
+        price: editCourseData.price || "",
+        estimatedPrice: editCourseData?.estimatedPrice || "",
+        tags: editCourseData.tags || "",
+        level: editCourseData.level || "",
+        categories: editCourseData.categories || "",
+        demoUrl: editCourseData.demoUrl || "",
+        thumbnail: editCourseData?.thumbnail?.url || "",
+        type: editCourseData.type || ""
       })
-      setBenefits(editCourseData.benefits);
-      setPrerequisites(editCourseData.prerequisites);
-      setCourseContentData(editCourseData.courseData);
+      setBenefits(editCourseData.benefits || []);
+      setPrerequisites(editCourseData.prerequisites || []);
+      setCourseContentData(editCourseData.courseData || []);
     }
   }, [editCourseData]);
 
