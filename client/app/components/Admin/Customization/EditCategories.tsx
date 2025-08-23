@@ -118,14 +118,14 @@ const EditCategories = (props: Props) => {
               styles.button
             } !w-[100px] !min-h-[40px] !h-[40px] dark:text-white text-black bg-[#cccccc34] 
             ${
-              areCategoriesUnchanged(data.layout?.categories, categories) ||
+              areCategoriesUnchanged(data?.layout?.categories, categories) ||
               isAnyCategoryTitleEmpty(categories)
                 ? "!cursor-not-allowed"
                 : "!cursor-pointer !bg-[#42d383]"
             }
             !rounded absolute bottom-12 right-12`}
             onClick={
-              areCategoriesUnchanged(data.layout?.categories, categories) ||
+              areCategoriesUnchanged(data?.layout?.categories, categories) ||
               isAnyCategoryTitleEmpty(categories)
                 ? () => null
                 : editCategoriesHandler

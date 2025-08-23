@@ -68,6 +68,7 @@ const EditCourse:FC<Props> = ({id}) => {
     categories:"",
     demoUrl:  "",
     thumbnail:  "",
+    type:""
   });
   const [benefits, setBenefits] = useState([{ title: "" }]);
   const [prerequisites, setPrerequisites] = useState([{ title: "" }]);
@@ -130,6 +131,7 @@ const EditCourse:FC<Props> = ({id}) => {
       benefits: formattedBenefits,
       prerequisites: formattedPrerequisites,
       courseContent: formattedCourseContentData,
+      type:courseInfo.type
     };
 
     setCourseData(data);
@@ -150,6 +152,7 @@ const EditCourse:FC<Props> = ({id}) => {
             setCourseInfo={setCourseInfo}
             active={active}
             setActive={setActive}
+            categories={[]}
           />
         )}
 
