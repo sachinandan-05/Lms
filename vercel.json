@@ -2,18 +2,21 @@
   "version": 2,
   "builds": [
     {
-      "src": "app.ts",
-      "use": "@vercel/node"
+      "src": "package.json",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["build/**"]
+      }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/app.ts"
+      "dest": "/build/server.js"
     }
   ],
   "functions": {
-    "app.ts": {
+    "build/server.js": {
       "runtime": "nodejs18.x"
     }
   },
